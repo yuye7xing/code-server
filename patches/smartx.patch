@@ -1,0 +1,77 @@
+Index: code-server/lib/vscode/build/tsconfig.json
+===================================================================
+--- code-server.orig/lib/vscode/build/tsconfig.json
++++ code-server/lib/vscode/build/tsconfig.json
+@@ -1,6 +1,6 @@
+ {
+ 	"compilerOptions": {
+-		"target": "es2022",
++		"target": "es2018",
+ 		"lib": [
+ 			"ES2020"
+ 		],
+Index: code-server/lib/vscode/src/tsconfig.json
+===================================================================
+--- code-server.orig/lib/vscode/src/tsconfig.json
++++ code-server/lib/vscode/src/tsconfig.json
+@@ -7,7 +7,7 @@
+ 		"allowJs": true,
+ 		"resolveJsonModule": true,
+ 		"outDir": "../out/vs",
+-		"target": "es2021",
++		"target": "es2018",
+ 		"types": [
+ 			"keytar",
+ 			"mocha",
+Index: code-server/lib/vscode/src/vs/code/browser/workbench/workbench-dev.html
+===================================================================
+--- code-server.orig/lib/vscode/src/vs/code/browser/workbench/workbench-dev.html
++++ code-server/lib/vscode/src/vs/code/browser/workbench/workbench-dev.html
+@@ -46,7 +46,7 @@
+ 		require.config({
+ 			baseUrl: `${baseUrl}/out`,
+ 			recordStats: true,
+-			trustedTypesPolicy: window.trustedTypes?.createPolicy('amdLoader', {
++			trustedTypesPolicy: window.trustedTypes && window.trustedTypes.createPolicy('amdLoader', {
+ 				createScriptURL(value) {
+ 					if(value.startsWith(window.location.origin)) {
+ 						return value;
+Index: code-server/lib/vscode/src/vs/code/browser/workbench/workbench.html
+===================================================================
+--- code-server.orig/lib/vscode/src/vs/code/browser/workbench/workbench.html
++++ code-server/lib/vscode/src/vs/code/browser/workbench/workbench.html
+@@ -72,7 +72,7 @@
+ 		require.config({
+ 			baseUrl: `${baseUrl}/out`,
+ 			recordStats: true,
+-			trustedTypesPolicy: window.trustedTypes?.createPolicy('amdLoader', {
++			trustedTypesPolicy: window.trustedTypes && window.trustedTypes.createPolicy('amdLoader', {
+ 				createScriptURL(value) {
+ 					if(value.startsWith(window.location.origin)) {
+ 						return value;
+Index: code-server/lib/vscode/src/vs/workbench/services/extensions/worker/webWorkerExtensionHostIframe.html
+===================================================================
+--- code-server.orig/lib/vscode/src/vs/workbench/services/extensions/worker/webWorkerExtensionHostIframe.html
++++ code-server/lib/vscode/src/vs/workbench/services/extensions/worker/webWorkerExtensionHostIframe.html
+@@ -85,7 +85,7 @@
+ 			worker.onmessage = (event) => {
+ 				const { data } = event;
+ 
+-				if (data?.type === '_newWorker') {
++				if (data.type === '_newWorker') {
+ 					const { id, port, url, options } = data;
+ 					const newWorker = new Worker(url, options);
+ 					newWorker.postMessage(port, [port]);
+Index: code-server/lib/vscode/src/vs/base/common/performance.js
+===================================================================
+--- code-server.orig/lib/vscode/src/vs/base/common/performance.js
++++ code-server/lib/vscode/src/vs/base/common/performance.js
+@@ -78,7 +78,7 @@
+ 		} else if (typeof process === 'object') {
+ 			// node.js: use the normal polyfill but add the timeOrigin
+ 			// from the node perf_hooks API as very first mark
+-			const timeOrigin = performance?.timeOrigin ?? Math.round((require.__$__nodeRequire || require)('perf_hooks').performance.timeOrigin);
++			const timeOrigin = performance.timeOrigin
+ 			return _definePolyfillMarks(timeOrigin);
+ 
+ 		} else {
